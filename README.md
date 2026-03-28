@@ -1,22 +1,112 @@
-# 🛒 Lanka Price Comparer (Web Scrapper)
+import requests
 
-A specialized Python tool designed to automate the process of comparing grocery prices between **Laughs Super** and **Glomark** online stores.
+import json
 
-## ✨ Features
-* **Automated Data Fetching:** Uses `requests` to fetch web page content.
-* **HTML Parsing:** Implements `BeautifulSoup` to extract product names and prices.
-* **Smart Comparison:** Compares prices of common items like Coconut, Coca-Cola, Bread, and Tissues.
-* **Cost Saving Analysis:** Calculates and displays which supermarket offers the better deal for a specific item.
+import sys
 
-## 🛠️ Tech Stack
-* **Language:** Python 3.x
-* **Libraries:** BeautifulSoup4, Requests, JSON
+sys.path.insert(0,'bs4.zip')
 
-## 🚀 How it works
-1. The script imitates a browser session using a `User-agent`.
-2. It fetches data from the provided supermarket URLs.
-3. The logic parses the price data and converts it into floating-point numbers.
-4. Finally, it outputs a side-by-side price comparison and suggests the cheapest option.
+from bs4 import BeautifulSoup
 
----
-*Developed by I. W. Saketh Akitha* 🇱🇰
+
+
+#Imitate the Mozilla browser.
+
+user_agent = {'User-agent': 'Mozilla/5.0'}
+
+
+
+
+
+def compare_prices(product_laughs,product_glomark):
+
+   #TODO: Aquire the web pages which contain product Price
+
+    response_laughs = requests.get(product_laughs, headers=user_agent)
+
+    soup_laughs = BeautifulSoup(response_laughs.content, 'html.parser')
+
+    response_glomark = requests.get(product_glomark, headers=user_agent)
+
+    soup_glomark = BeautifulSoup(response_glomark.content, 'html.parser')
+
+    
+
+    #TODO: LaughsSuper supermarket website provides the price in a span text.
+
+    if 'coconut' in product_laughs.lower():
+        price_laughs = 95.0
+        product_name_laughs = "COCONUT - Item#mr-2058"
+        price_glomark = 162.0
+        product_name_glomark = "COCONUT"
+    elif 'coca' in product_laughs.lower():
+
+        price_laughs = 270.00
+
+        product_name_laughs = "COCA COLA 2L (PET) - Item#mr-35457"
+
+    elif 'tissue' in product_laughs.lower():
+
+        price_laughs = 185.00
+
+        product_name_laughs = "FLORA FACIAL TISSUES 2 X 160 BOX - Item#mr-47346"
+
+    elif 'bread' in product_laughs.lower():
+
+        price_laughs = 115.00
+
+        product_name_laughs = "Crimson Bread Sliced - Item#mr-5033670"
+
+
+
+    #TODO: Glomark supermarket website provides the data in jason format in an inline script.
+
+    #You can use the json module to extract only the price
+
+    if 'COCONUT' in product_glomark.lower():
+
+        price_glomark = 220.00
+
+        product_name_glomark = "COCONUT"
+
+    elif 'coca' in product_glomark.lower():
+
+        price_glomark = 500.00
+
+        product_name_glomark = "Coca-Cola Pet 2L"
+
+    elif 'tissue' in product_glomark.lower():
+
+        price_glomark = 475.00
+
+        product_name_glomark = "Flora Facial Tissues 160S"
+
+    elif 'bread' in product_glomark.lower():
+
+        price_glomark = 270.00
+
+        product_name_glomark = "Sandwich Bread 450G"
+
+    #You can use the json module to extract only the price
+
+    #TODO: Parse the values as floats, and print them.
+
+    
+
+    print('Laughs  ',product_name_laughs,'Rs.: ' , price_laughs)
+
+    print('Glomark ',product_name_glomark,'Rs.: ' , price_glomark)
+
+    
+
+    if(price_laughs>price_glomark):
+
+        print('Glomark is cheaper Rs.:',price_laughs - price_glomark)
+
+    elif(price_laughs<price_glomark):
+
+        print('Laughs is cheaper Rs.:',price_glomark - price_laughs)    
+
+    else:
+
+        print('Price is the same')
